@@ -7,6 +7,8 @@
 
 import json
 import sys
+from datetime import datetime
+from dateutil import tz
 
 # The filename of where we should output door open/closed state.
 doorstate_file = 'dooropen.txt'
@@ -14,9 +16,10 @@ doorstate_file = 'dooropen.txt'
 # The filename of where sunrise/sunset data will live.
 sunset_file = 'sunrise_data.json'
 
-# The suffix of the filename where logs are written. Scripts can prepend names
-# the beginning of this file name so they can be separated from each other.
-log_file = 'log.txt'
+# The prefix of the filename where logs are written. Scripts can append names to
+# the end of this name so they can be separated from each other by directories or whatever
+# you might want.
+log_file_prefix = 'log-'
 
 # how many hours of daylight you want your chickens to have,
 # for adding supplemental light in the short winter
@@ -25,6 +28,13 @@ needed_daylight = 12
 # set this latitude and longitude to your location
 latitude = '47.690416'
 longitude = '-122.315576'
+
+# wiringpi pins that we are using for automation; my outlets are labeled with marker with the
+# matching wPi pin number, but yours may be different depending on your wiring.
+pin_lights = 0
+pin_door = 2
+pin_outlet1 = 1 # unused
+pin_outlet3 = 3 # unused
 
 # just a helper that reads the JSON file as specified in the argument
 def getJSONData(file):
@@ -45,4 +55,15 @@ def writeJSONData(file, data):
         outfile.close
     except IOError as e:
         print file, ' error: ', e.strerror
+        sys.exit(1)
+
+# will append the current time and the provided message to the file in log_file_prefix+name+.txt
+def appendLog(name,message):
+    fname = log_file_prefix+name+'.txt'
+    try:
+        with open(fname,'a') as outfile:
+            outfile.write(str(datetime.now(tz.tzlocal()))+' '+message+"\n")
+        outfile.close
+    except IOError as e:
+        print name, ' error: ', e.strerror
         sys.exit(1)

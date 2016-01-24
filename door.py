@@ -22,7 +22,7 @@ import coop_settings
 
 # function for managing the door open/close state
 # technically, we don't know if the door is already opened or closed
-# this function just turns the motor for half a second regardless
+# this function just turns the motor for a few seconds regardless
 def changedoor(newstate):
     wiringpi.wiringPiSetup()
     wiringpi.pinMode(coop_settings.pin_door, 1) # output mode
@@ -32,10 +32,18 @@ def changedoor(newstate):
     else:
         coop_settings.appendLog('door','closing the door')
 
+    try:
+        with open(coop_settings.doorstate_file,'w') as f:
+          f.write(str(newstate))
+        f.close
+    except IOError as e:
+        print file, ' error: ', e.strerror
+        sys.exit(1)
+
     # low turns the motor on
     wiringpi.digitalWrite(coop_settings.pin_door, 0)
     # wait for it to finish running - a bigger door would require more to complete
-    sleep(0.5)
+    sleep(15)
     # high turns the motor back off so that it can run again later
     wiringpi.digitalWrite(coop_settings.pin_door, 1)
 

@@ -31,8 +31,8 @@ longitude = '-122.315576'
 
 # wiringpi pins that we are using for automation; my outlets are labeled with marker with the
 # matching wPi pin number, but yours may be different depending on your wiring.
-pin_lights = 0
-pin_door = 2
+pin_lights  = 2
+pin_door    = 0
 pin_outlet1 = 1 # unused
 pin_outlet3 = 3 # unused
 

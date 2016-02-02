@@ -1,4 +1,4 @@
-# Central place easy and central definition of file data. This is helpful when you run this
+# One place for easy and central definition of file data. This is helpful when you run this
 # script in multiple environments, or if you want to save your data in a new location without
 # worrying about updating each script.
 #

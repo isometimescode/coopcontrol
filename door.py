@@ -16,52 +16,18 @@ import sys
 from time import sleep
 from datetime import datetime
 from dateutil import parser, tz
-import wiringpi2 as wiringpi
-import coop_settings
+from inc.doormod import Door
+from inc import coop_settings as cs
 
+# optional: can tell the script to be more verbose in the logs
+if len(sys.argv) > 1:
+    VERBOSE = sys.argv[1]
+else:
+    VERBOSE = 0
 
-# function for managing the door open/close state
-# technically, we don't know if the door is already opened or closed
-# this function just turns the motor for a few seconds regardless
-def changedoor(newstate):
-    wiringpi.wiringPiSetup()
-    wiringpi.pinMode(coop_settings.pin_door, 1) # output mode
-
-    if newstate == 1: #open
-        coop_settings.appendLog('door','opening the door')
-    else:
-        coop_settings.appendLog('door','closing the door')
-
-    try:
-        with open(coop_settings.doorstate_file,'w') as f:
-          f.write(str(newstate))
-        f.close
-    except IOError as e:
-        print file, ' error: ', e.strerror
-        sys.exit(1)
-
-    # low turns the motor on
-    wiringpi.digitalWrite(coop_settings.pin_door, 0)
-    # wait for it to finish running - a bigger door would require more to complete
-    sleep(15)
-    # high turns the motor back off so that it can run again later
-    wiringpi.digitalWrite(coop_settings.pin_door, 1)
-
-# check the door's current state; we are just manually saving this data to a file
-# since there is no other way to know if the door was last opened or closed
-# TODO: replace this with a contact switch to get real data
-def getdoor():
-    try:
-        with open(coop_settings.doorstate_file,'r') as f:
-            doorstate = f.readline()
-            doorstate = doorstate.strip()
-        f.close
-    except IOError:
-        doorstate = 0
-    return doorstate
 
 # get sunrise/sunset data
-srdata = coop_settings.getJSONData(coop_settings.sunset_file)
+srdata = cs.getJSONData(cs.sunset_file)
 
 sunrise = parser.parse(srdata['sunrise_localtime'])
 sunset = parser.parse(srdata['sunset_localtime'])
@@ -75,11 +41,16 @@ if sunrise.date() != current.date():
 
 # the door is only open during sunrise and sunset
 # any other time the door should be closed
+
+d = Door()
+
 if sunrise <= current < sunset:
-    coop_settings.appendLog('door','its after sunrise('+sunrise.strftime('%X')+') check door: open')
-    if int(getdoor()) == 0:
-        changedoor(1)
+    if VERBOSE:
+        cs.appendLog('door','its after sunrise('+sunrise.strftime('%X')+') check door: open')
+    if int(d.getdoor()) == 0:
+        d.changedoor(1)
 else:
-    coop_settings.appendLog('door','its after sunset('+sunset.strftime('%X')+') check door: closed')
-    if int(getdoor()) == 1:
-        changedoor(0)
+    if VERBOSE:
+        cs.appendLog('door','its after sunset('+sunset.strftime('%X')+') check door: closed')
+    if int(d.getdoor()) == 1:
+        d.changedoor(0)

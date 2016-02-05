@@ -14,37 +14,22 @@
 import sys
 from datetime import datetime
 from dateutil import parser, tz
-import wiringpi2 as wiringpi
-import coop_settings
+from inc.lightmod import Light
+from inc import coop_settings as cs
 
-# this is for convenience in reading; basically you set the relay pin to "low" for "active"
-# and set the pin to "high" to make it "inactive"
-light_on = 0 # or low
-light_off = 1 # or high
-
-def changelight(newstate):
-    wiringpi.wiringPiSetup()
-    wiringpi.pinMode(coop_settings.pin_lights, 1) # output mode
-
-    if newstate == light_on:
-        coop_settings.appendLog('light','setting pin#'+str(coop_settings.pin_lights)+' to on')
-        wiringpi.digitalWrite(coop_settings.pin_lights, light_on)
-    else:
-        coop_settings.appendLog('light','setting pin#'+str(coop_settings.pin_lights)+' to off')
-        wiringpi.digitalWrite(coop_settings.pin_lights, light_off)
-
-
-def getlight():
-    wiringpi.wiringPiSetup()
-    wiringpi.pinMode(coop_settings.pin_lights, 1) # output mode
-    return wiringpi.digitalRead(coop_settings.pin_lights)
+# optional: can tell the script to be more verbose in the logs
+if len(sys.argv) > 1:
+    VERBOSE = sys.argv[1]
+else:
+    VERBOSE = 0
 
 # get sunrise/sunset data
-srdata = coop_settings.getJSONData(coop_settings.sunset_file)
+srdata = cs.getJSONData(cs.sunset_file)
 
 # depending on the settings, we may not need any actual supplemental light
 if srdata['light_on_localtime'] == 0:
-    coop_settings.appendLog('light','light skipped')
+    if VERBOSE:
+        cs.appendLog('light','light skipped')
     sys.exit()
 
 lighton = parser.parse(srdata['light_on_localtime'])
@@ -59,11 +44,15 @@ if lighton.date() != current.date():
 
 # the light is going to be on between the light time and sunrise
 # any other time the light should be off
+light = Light()
+
 if lighton <= current < sunrise:
-    coop_settings.appendLog('light','its after lighton('+lighton.strftime('%X')+') check light: on')
-    if int(getlight()) == light_off:
-        changelight(light_on)
+    if VERBOSE:
+        cs.appendLog('light','its after lighton('+lighton.strftime('%X')+') check light: on')
+    if int(light.getlight()) == light.off:
+        light.changelight(light.on)
 else:
-    coop_settings.appendLog('light','its after sunrise('+sunrise.strftime('%X')+') check light: off')
-    if int(getlight()) == light_on:
-        changelight(light_off)
+    if VERBOSE:
+        cs.appendLog('light','its after sunrise('+sunrise.strftime('%X')+') check light: off')
+    if int(light.getlight()) == light.on:
+        light.changelight(light.off)

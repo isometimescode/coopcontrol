@@ -13,7 +13,7 @@ import json
 import sys
 from datetime import datetime, timedelta
 from dateutil import parser, tz
-import coop_settings
+from inc import coop_settings as cs
 
 # optional: can pass in dates to the script; otherwise we just default to today
 if len(sys.argv) > 1:
@@ -23,8 +23,8 @@ else:
 
 SUNRISE_URL = ('http://api.sunrise-sunset.org/json?date='+DATE+
     '&formatted=0'+
-    '&lat='+coop_settings.latitude+
-    '&lng='+coop_settings.longitude)
+    '&lat='+cs.latitude+
+    '&lng='+cs.longitude)
 
 try:
     apidata = json.load(urllib2.urlopen(SUNRISE_URL,None,2))
@@ -46,8 +46,8 @@ sunset_lcl = utc.astimezone(tz.tzlocal())
 # this data is also in apidata['results']['day_length']
 daylight_hours = (sunset_lcl - sunrise_lcl).total_seconds() / 60 / 60
 
-if daylight_hours < coop_settings.needed_daylight:
-    light_lcl = sunrise_lcl - timedelta(hours=(coop_settings.needed_daylight-daylight_hours))
+if daylight_hours < cs.needed_daylight:
+    light_lcl = sunrise_lcl - timedelta(hours=(cs.needed_daylight-daylight_hours))
     light_lcl = light_lcl.strftime("%Y-%m-%d %H:%M:%S%z")
 else:
     light_lcl = 0
@@ -60,4 +60,4 @@ data['sunset_localtime'] = sunset_lcl.strftime("%Y-%m-%d %H:%M:%S%z")
 data['daylight_hours'] = daylight_hours
 data['light_on_localtime'] = light_lcl
 
-coop_settings.writeJSONData(coop_settings.sunset_file, data)
+cs.writeJSONData(cs.sunset_file, data)

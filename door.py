@@ -13,7 +13,6 @@
 
 import json
 import sys
-from time import sleep
 from datetime import datetime
 from dateutil import parser, tz
 from inc.doormod import Door

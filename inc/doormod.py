@@ -1,5 +1,6 @@
 # Helper functions for managing the door on the appropriate pin
 #
+from time import sleep
 import wiringpi2 as wiringpi
 import coop_settings
 

@@ -16,20 +16,20 @@ class Light:
         self.getlight()
 
     def getlight(self):
-        wiringpi.wiringPiSetup()
+        wiringpi.wiringPiSysSetup()
         wiringpi.pinMode(coop_settings.pin_lights, 1) # output mode
-        self.currentstate = wiringpi.digitalRead(coop_settings.pin_lights)
+        self.currentstate = int(wiringpi.digitalRead(coop_settings.pin_lights))
         return self.currentstate
 
     def changelight(self,newstate):
-        wiringpi.wiringPiSetup()
+        wiringpi.wiringSysPiSetup()
         wiringpi.pinMode(coop_settings.pin_lights, 1) # output mode
 
         if newstate == self.on:
             coop_settings.appendLog('light','setting pin#'+str(coop_settings.pin_lights)+' to on')
             wiringpi.digitalWrite(coop_settings.pin_lights, self.on)
-            self.currentstate = newstate
         else:
             coop_settings.appendLog('light','setting pin#'+str(coop_settings.pin_lights)+' to off')
             wiringpi.digitalWrite(coop_settings.pin_lights, self.off)
-            self.currentstate = newstate
+
+        self.currentstate = int(newstate)

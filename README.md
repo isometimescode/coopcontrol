@@ -12,6 +12,8 @@ There are plenty of tutorials out there for setting up your Pi for SSH or as a w
 
 All of the crons here are written in Python, using the [wiringPi](http://wiringpi.com) library to control the pins. See [this tutorial](http://raspi.tv/2013/how-to-use-wiringpi2-for-python-on-the-raspberry-pi-in-raspbian) to set that up if you aren't already using it.
 
+I setup my Pi to export the BCM pins I'm using so that non-root users can run wiringPi. See the [gpio export command](http://wiringpi.com/the-gpio-utility) and the [wiringPiSetupSys() function](http://wiringpi.com/reference/setup/). I also found that I needed to add my raspberry pi user to the "gpio" group in order to run python as a non-root user.
+
 ### Installation
 
 Copy all of the `*.py` files to your Raspberry Pi, update `coop_settings.py` as noted below, and setup some crons. I recommend running the code manually for each file just to make sure you have any required Python libraries installed.
@@ -23,7 +25,7 @@ This file is just the collection of settings used in the rest of the code. By it
 Required Updates:
 
 1. `latitude` and `longitude`: These need to be set to wherever you are. See (http://www.latlong.net/) if you don't know yours.
-2. `pin_lights` and `pin_door`: Depending on how you wired your Pi, you may have different pins than I used. These are the _wiringPi pins_ and not the GPIO or other pins. See (http://wiringpi.com/pins/) for more information.
+2. `pin_lights` and `pin_door`: Depending on how you wired your Pi, you may have different pins than I used. These are the _BCM pins_ and not the GPIO or wiringpi pins. See (http://wiringpi.com/pins/) for more information. Note that this is so the code can be run as a non-root user. See setup above for wiringPi.
 
 Optional Updates:
 

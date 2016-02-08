@@ -46,10 +46,10 @@ d = Door()
 if sunrise <= current < sunset:
     if VERBOSE:
         cs.appendLog('door','its after sunrise('+sunrise.strftime('%X')+') check door: open')
-    if int(d.getdoor()) == 0:
+    if d.getdoor() == 0:
         d.changedoor(1)
 else:
     if VERBOSE:
         cs.appendLog('door','its after sunset('+sunset.strftime('%X')+') check door: closed')
-    if int(d.getdoor()) == 1:
+    if d.getdoor() == 1:
         d.changedoor(0)

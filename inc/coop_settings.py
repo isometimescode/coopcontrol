@@ -30,11 +30,11 @@ latitude = '47.690416'
 longitude = '-122.315576'
 
 # wiringpi pins that we are using for automation; my outlets are labeled with marker with the
-# matching wPi pin number, but yours may be different depending on your wiring.
-pin_lights  = 2
-pin_door    = 0
-pin_outlet1 = 1 # unused
-pin_outlet3 = 3 # unused
+# matching BCM pin number, but yours may be different depending on your wiring and board.
+pin_lights  = 27 # wiringpi 2
+pin_door    = 17 # wiringpi 0
+pin_outlet1 = 18 # unused, wiringpi 1
+pin_outlet3 = 22 # unused, wiringpi 3
 
 # just a helper that reads the JSON file as specified in the argument
 def getJSONData(file):

@@ -18,7 +18,7 @@ class Door:
         try:
             with open(coop_settings.doorstate_file,'r') as f:
                 doorstate = f.readline()
-                self.currentstate = doorstate.strip()
+                self.currentstate = int(doorstate.strip())
             f.close
         except IOError:
             self.currentstate = 0
@@ -28,7 +28,7 @@ class Door:
     # technically, we don't know if the door is already opened or closed
     # this function just turns the motor for a few seconds regardless
     def changedoor(self,newstate):
-        wiringpi.wiringPiSetup()
+        wiringpi.wiringPiSetupSys()
         wiringpi.pinMode(coop_settings.pin_door, 1) # output mode
 
         if newstate == 1: #open
@@ -47,7 +47,7 @@ class Door:
         # low turns the motor on
         wiringpi.digitalWrite(coop_settings.pin_door, 0)
         # wait for it to finish running - a bigger door would require more to complete
-        sleep(15)
+        sleep(10)
         # high turns the motor back off so that it can run again later
         wiringpi.digitalWrite(coop_settings.pin_door, 1)
-        self.currentstate = newstate
+        self.currentstate = int(newstate)

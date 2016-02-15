@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Coop Control</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    .glyphicon-refresh-animate {
+        -animation: spin 1s infinite linear;
+        -ms-animation: spin 1s infinite linear;
+        -webkit-animation: spinw 1s infinite linear;
+        -moz-animation: spinm 1s infinite linear;
+    }
+
+    @keyframes spin {
+        from { transform: scale(1) rotate(0deg);}
+        to { transform: scale(1) rotate(360deg);}
+    }
+
+    @-webkit-keyframes spinw {
+        from { -webkit-transform: rotate(0deg);}
+        to { -webkit-transform: rotate(360deg);}
+    }
+
+    @-moz-keyframes spinm {
+        from { -moz-transform: rotate(0deg);}
+        to { -moz-transform: rotate(360deg);}
+    }
+
+    .disabled { background-color: transparent; color:inherit; }
+    div.alert {display:none;}
+    </style>
+  </head>
+<body>
+
+    <div class="container">
+
+        <div class="page-header">
+            <h1>Coop Control</h1>
+            <p class="lead">Use this page to control the programmable outlets on the chicken coop.</p>
+        </div>
+
+        <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          API error; message:  <span id="alert-message"></span>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="panel panel-default" id="door-panel">
+                    <div class="panel-heading"><h2 class="panel-title">Door</h2></div>
+                    <div class="panel-body">
+                        <p>The door is currently <strong id="door-status">
+                            <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i></strong>.
+                        </p>
+                        <div class="btn-group btn-group-justified" role="group">
+                            <a role="button" data-status-value="0" class="btn btn-lg btn-danger disabled">
+                            Close <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i></a>
+                            <a role="button" data-status-value="1" class="btn btn-lg btn-success disabled">
+                            Open <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="panel panel-default" id="light-panel">
+                    <div class="panel-heading"><h2 class="panel-title">Lights</h2></div>
+                    <div class="panel-body">
+                        <p>The lights are currently <strong id="light-status">
+                            <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i></strong>.
+                        </p>
+                        <div class="btn-group btn-group-justified" role="group">
+                            <a role="button" data-status-value="0" class="btn btn-lg btn-danger disabled">
+                            Off <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i></a>
+                            <a role="button" data-status-value="1" class="btn btn-lg btn-success disabled">
+                            On <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
+
+    <script type="text/javascript">
+        function updateItem(data) {
+            console.log(data);
+            $('#'+data.name+'-status').text(data.status_str);
+
+            panel = $('#'+data.name+'-panel');
+
+            offbutton = panel.find('.btn-danger');
+            offbutton.data('id',data.id);
+            offbutton.find('.glyphicon-refresh-animate').fadeOut('slow');
+
+            onbutton = panel.find('.btn-success');
+            onbutton.data('id',data.id);
+            onbutton.find('.glyphicon-refresh-animate').fadeOut('slow');
+
+            if (data.status) {
+                // item is on, so enable the off button
+                panel.removeClass('panel-danger');
+                offbutton.removeClass('disabled');
+
+                panel.addClass('panel-success');
+                onbutton.addClass('disabled');
+            } else {
+                // item is off, so enable the on button
+                panel.removeClass('panel-success');
+                onbutton.removeClass('disabled');
+
+                panel.addClass('panel-danger');
+                offbutton.addClass('disabled');
+            }
+        }
+
+        function updateError(request, status, error) {
+            console.log(request);
+            message = request.responseJSON ? request.responseJSON.message : error;
+            $('#alert-message').append('<br/>'+message);
+            $('.alert').fadeIn('slow');
+        }
+
+        $(document).ready(function() {
+            // submit an update on link/button click
+            $('a').click(function(e){
+
+                // don't follow the href
+                // show a "loading" animation and disable further clicking
+                e.preventDefault();
+                loading = $(e.toElement).find('.glyphicon-refresh-animate');
+                loading.fadeIn('slow');
+                $(e.toElement).addClass('disabled');
+
+                // make a call to the API to update the status
+                $.when($.ajax({
+                    url: 'update/id/'+$(e.toElement).data('id')+"/",
+                    data: "status="+$(e.toElement).data('status-value'),
+                    type: "POST",
+                    success: updateItem,
+                    error: updateError
+                }));
+            });
+
+            // grab the current status for each panel
+            $.when($.getJSON('info/light/','',updateItem).fail(updateError),
+                $.getJSON('info/door/','',updateItem).fail(updateError))
+            .fail(function(){$('.glyphicon-refresh-animate')
+                .removeClass('glyphicon-refresh-animate')
+                .addClass('glyphicon-exclamation-sign')});
+        });
+    </script>
+</body>
+</html>

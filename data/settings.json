@@ -1,0 +1,9 @@
+{
+  "data-directory": "",
+  "log-level": "DEBUG",
+  "light-bcm-pin": 27,
+  "door-bcm-pin": 17,
+  "latitude": "47.690416",
+  "longitude": "-122.315576",
+  "ideal-day": 12
+}

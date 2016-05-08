@@ -19,6 +19,8 @@ There are plenty of tutorials out there for setting up your Pi for SSH or as a w
 :warning:
 I setup my Pi to export the BCM pins I'm using so that non-root users can run wiringPi. If you want to know more, see the [gpio export command](http://wiringpi.com/the-gpio-utility) and the [wiringPiSetupSys() function](http://wiringpi.com/reference/setup/). I also found that I needed to add my raspberry pi user to the "gpio" group. This is only needed for the web-facing code as it runs as a different user; if you don't use that then you can ignore this part.
 
+To handle this initialization when my pi restarts, I'm using the bash script in `bin/gpio_init.sh` and run it like this in the crontab: `@reboot /full/path/bin/gpio_init.sh /full/path &`. The output goes to `/var/log/syslog`.
+
 1. Copy all of the files from the repo onto your Pi. You can use `git clone` or copy it manually if you don't have git.
 2. Update the [settings file](#settings) for your location.
 3. I run this code in a [virtual environment](http://docs.python-guide.org/en/latest/dev/virtualenvs/). You don't have to but it just keeps things separate.

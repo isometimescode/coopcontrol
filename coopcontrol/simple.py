@@ -23,10 +23,11 @@ class Simple:
             IOError on file errors
         """
 
-        self.status     = -1
-        self.bcm_pin    = -1
-        self.on_string  = ""
-        self.off_string = ""
+        self.status        = -1
+        self.write_bcm_pin = -1
+        self.read_bcm_pin  = -1
+        self.on_string     = ""
+        self.off_string    = ""
 
         # read the provided settings JSON file for all our details
         with open(settings_file,'r') as f:
@@ -53,9 +54,14 @@ class Simple:
 
         self.read_sun_data()
 
-        shortname = self.__class__.__name__.lower()+'-bcm-pin'
-        if shortname in settings_data:
-            self.bcm_pin = settings_data[shortname]
+        shortname = self.__class__.__name__.lower()
+        if shortname+'-bcm-pin' in settings_data:
+            self.write_bcm_pin = settings_data[shortname+'-bcm-pin']
+
+        if shortname+'-read-bcm-pin' in settings_data:
+            self.read_bcm_pin = settings_data[shortname+'-read-bcm-pin']
+        else:
+            self.read_bcm_pin = self.write_bcm_pin
 
 
     def get_status_name(self,num_status=-1):
@@ -82,7 +88,7 @@ class Simple:
         self.init_output()
 
         # we have to translate the pin reading to a status
-        self.status = int(wiringpi.digitalRead(self.bcm_pin) == self.ON)
+        self.status = int(wiringpi.digitalRead(self.read_bcm_pin) == self.ON)
         return self.status
 
 
@@ -100,11 +106,11 @@ class Simple:
         self.init_output()
 
         if new_status == 1:
-            logging.info('setting pin#%s to on',str(self.bcm_pin))
-            wiringpi.digitalWrite(self.bcm_pin, self.ON)
+            logging.info('setting pin#%s to on',str(self.write_bcm_pin))
+            wiringpi.digitalWrite(self.write_bcm_pin, self.ON)
         else:
-            logging.info('setting pin#%s to off',str(self.bcm_pin))
-            wiringpi.digitalWrite(self.bcm_pin, self.OFF)
+            logging.info('setting pin#%s to off',str(self.write_bcm_pin))
+            wiringpi.digitalWrite(self.write_bcm_pin, self.OFF)
 
         self.status = int(new_status)
 
@@ -113,7 +119,7 @@ class Simple:
         """Set the pin as output mode"""
 
         wiringpi.wiringPiSetupSys()
-        wiringpi.pinMode(self.bcm_pin, 1) # output mode
+        wiringpi.pinMode(self.write_bcm_pin, 1) # output mode
 
     def read_sun_data(self):
         """

@@ -8,7 +8,7 @@ Your Pi will need to be able to talk to the internet so that the sunrise code ca
 
 ### Door Motor
 
-I use the [Add-A-Motor D20](http://www.add-a-motor.com/) door on my coop. Since I don't have a sensor (magnetic contact switch) on it at the moment, I have to "guess" knowing when the door is really open and closed with a log file. A future upgrade would be to use another Pi pin with a sensor to detect the actual state. If you use a different door setup, then you might not be able to use the door module as is currently written.
+I use the [Add-A-Motor D20](http://www.add-a-motor.com/) door on my coop. If you use a different door setup, then you might not be able to use the door module as is currently written.
 
 ## The Software
 
@@ -30,9 +30,8 @@ $ virtualenv venv
 ```
 4. Load the required libraries like wiringpi via pip: `pip install -r requirements.txt`
 5. Run the setup code to create the coopcontrol module: `venv/bin/python setup.py install`
-6. Create some default files for logs and door status. This assumes the door is currently open and that you are using the default data directory. Note that you will need to change the group and write permissions if you need something like the _www-data_ user to read/write these files.
+6. Create some default files for logs. This example assumes that you are using the default data directory. Note that you will need to change the group and write permissions if you need something like the _www-data_ user to read/write these files.
 ```
-$ echo -n 1 > data/doorstatus.txt
 $ touch data/equipment-log.txt
 ```
 7. Test the sunrise API code. The json file should have information for the current date.

@@ -18,33 +18,10 @@ class Door(Simple):
     def __init__(self,settings_file):
         Simple.__init__(self,settings_file)
 
-        self.status_file = path.join(self.data_path,'doorstatus.txt')
         self.on_string   = "open"
         self.off_string  = "closed"
 
         self.get_status()
-
-    def get_status(self):
-        """
-        Get the current state of the door. Note that this method uses a file; we cannot
-        get the state from the pins because the Add-A-Motor door does not stay under power.
-
-        Returns:
-            0 for closed
-            1 for open
-
-        Raises:
-            IOError: File access issues
-        """
-
-        try:
-            with open(self.status_file,'r') as f:
-                doorstate = f.readline()
-                self.status = int(doorstate.strip())
-            f.close
-        except IOError:
-            self.status = 0
-        return self.status
 
 
     def set_status(self,new_status):
@@ -66,25 +43,18 @@ class Door(Simple):
         else:
             logging.info("door closing")
 
-        try:
-            with open(self.status_file,'w') as f:
-              f.write(str(new_status))
-            f.close
-        except IOError as e:
-            logging.warning('error: %s', e.strerror)
-            sys.exit(1)
-
         self.init_output()
 
         # low turns the motor on
-        wiringpi.digitalWrite(self.bcm_pin, 0)
+        wiringpi.digitalWrite(self.write_bcm_pin, 0)
 
         # this is simply to wait for the motor to finish running
         # we can't tell if its really finished so this sleep is just a guess
+        # TODO while loop until read_bcm_pin is ready?
         sleep(10)
 
         # high turns the motor back off so that it can run again later
-        wiringpi.digitalWrite(self.bcm_pin, 1)
+        wiringpi.digitalWrite(self.write_bcm_pin, 1)
         self.status = int(new_status)
 
 

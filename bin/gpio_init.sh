@@ -19,7 +19,7 @@ if [[ -z $HOME || ! -d $HOME ]]; then
 fi
 
 # make sure to include any that are running doors and lights
-gpio_used=(17 27 22 18)
+gpio_used=(17 27 22 18 23)
 
 for pin in ${gpio_used[@]}; do
         /usr/local/bin/gpio export $pin out

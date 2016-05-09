@@ -34,7 +34,7 @@ def item_info(item):
     data = {
         "status":item.get_status(),
         "status_str":item.get_status_name(),
-        "id":item.bcm_pin,
+        "id":item.read_bcm_pin,
         "name":(item.__class__.__name__).lower()
     }
     return jsonify(data)
@@ -72,10 +72,10 @@ def api_update(pinid):
     l = light.Light(app.config['settings_file'])
     d = door.Door(app.config['settings_file'])
 
-    if pinid == l.bcm_pin:
+    if pinid == l.read_bcm_pin:
         l.set_status(status)
         rs = item_info(l)
-    elif pinid == d.bcm_pin:
+    elif pinid == d.read_bcm_pin:
         d.set_status(status)
         rs = item_info(d)
     else:

@@ -1,0 +1,151 @@
+@import 'https://fonts.googleapis.com/css?family=Concert+One|Work+Sans';
+
+$heading-font: 'Concert One', cursive;
+$normal-font: 'Work Sans', sans-serif;
+
+$darkblue: #233d4d;
+$orange: #fe7f2d;
+$yellow: #fcca46;
+$green: #a1c181;
+$seagreen: #619b8a;
+$grey: #ecf0f1;
+$dropDown: true;
+
+body {
+    font-family: $normal-font;
+    padding-top: 70px;
+}
+
+/** override navbar colors, font, image */
+.navbar-default {
+  background-color: $darkblue;
+  border-color: $yellow;
+  .navbar-brand {
+    color: $grey;
+    font-family: $heading-font;
+    &:hover, &:focus {
+      color: $yellow; }}
+  .navbar-text {
+    color: $grey; }
+  .navbar-nav {
+    > li {
+      > a {
+        color: $grey;
+        &:hover,  &:focus {
+          color: $yellow; }}
+      @if $dropDown {
+        > .dropdown-menu {
+          background-color: $darkblue;
+          > li {
+            > a {
+              color: $grey;
+              &:hover,  &:focus {
+                color: $darkblue;
+                background-color: $yellow; }}
+            > .divider {
+              background-color: $yellow;}}}}}
+    @if $dropDown {
+      .open .dropdown-menu > .active {
+        > a, > a:hover, > a:focus {
+          color: $darkblue;
+          background-color: $yellow; }}}
+    > .active {
+      > a, > a:hover, > a:focus {
+        color: $darkblue;
+        background-color: $yellow; }}
+    > .open {
+      > a, > a:hover, > a:focus {
+        color: $darkblue;
+        background-color: $yellow; }}}
+  .navbar-toggle {
+    border-color: $grey;
+    color: $grey;
+    &:hover, &:focus {
+      background-color: $yellow; }
+    .icon-bar {
+      background-color: $grey; }}
+  .navbar-collapse,
+  .navbar-form {
+    border-color: $grey; }
+  .navbar-link {
+    color: $grey;
+    &:hover {
+      color: $grey; }}}
+@media (max-width: 767px) {
+  .navbar-default .navbar-nav .open .dropdown-menu {
+    > li > a {
+      color: $grey;
+      &:hover, &:focus {
+        color: $darkblue;
+        background-color: $yellow; }}
+    > .active {
+      > a, > a:hover, > a:focus {
+        color: $darkblue;
+        background-color: $yellow; }}}
+}
+
+/** buttons, panels indicating status */
+a.btn-off {
+    background-color: rgba($orange,0.6);
+    border-color: rgba($orange,1);
+    color: rgba(white,1);
+}
+
+a.btn-off:hover, a.btn-off:active, a.btn-off:focus {
+    background-color: rgba($orange,0.8);
+    border-color: rgba($orange,1);
+    color: rgba(white,1);
+}
+
+a.btn-on {
+    background-color: rgba($seagreen,0.6);
+    border-color: rgba($seagreen,1);
+    color: rgba(white,1);
+}
+
+a.btn-on:hover, a.btn-on:active, a.btn-on:focus {
+    background-color: rgba($seagreen,0.8);
+    border-color: rgba($seagreen,1);
+    color: rgba(white,1);
+}
+
+div.btn-group > a.disabled {
+    background-color: transparent;
+    color:inherit;
+}
+
+.panel-on .panel-heading {
+  background-color: rgba($seagreen,0.25);
+}
+
+.panel-off .panel-heading {
+  background-color: rgba($orange,0.25);
+}
+
+/** video toggle */
+section.alert, #js-video {
+    display:none;
+}
+
+/** loading icons */
+.glyphicon-refresh-animate {
+    -animation: spin 1s infinite linear;
+    -ms-animation: spin 1s infinite linear;
+    -webkit-animation: spinw 1s infinite linear;
+    -moz-animation: spinm 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+
+@-webkit-keyframes spinw {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@-moz-keyframes spinm {
+    from { -moz-transform: rotate(0deg);}
+    to { -moz-transform: rotate(360deg);}
+}

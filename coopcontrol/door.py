@@ -67,7 +67,9 @@ class Door(Simple):
             Datetime
         """
 
-        return parser.parse(self.sun_data['sunrise_localtime'])
+        # minimum door opening is 8am local time
+        # if it opens too early the raccoons arrive for breakfast :(
+        return parser.parse('08:00:00').replace(tzinfo=tz.tzlocal())
 
     def get_end_time(self):
         """

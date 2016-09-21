@@ -19,24 +19,26 @@ if [[ -z $HOME || ! -d $HOME ]]; then
 fi
 
 # make sure to include any that are running doors and lights
-gpio_used=(17 27 22 18 23)
+gpio_used=(17 27 22 18)
 
 for pin in ${gpio_used[@]}; do
         /usr/local/bin/gpio export $pin out
         /usr/local/bin/gpio -g write $pin 1
 done
 
-# turn on camera outlet wpi 3/BCM 22
-/usr/local/bin/gpio write 3 0
+# turn on camera outlet wpi 1/BCM 18
+/usr/local/bin/gpio write 1 0
+
+# initialize magnetic door switch wpi 4/BCM 23
+# its an input, pull-up
+/usr/local/bin/gpio export 23 in
+/usr/local/bin/gpio -g write 23 1
+/usr/local/bin/gpio mode 4 up
 
 # just confirms the change by printing output like
 # GPIO Pins exported:
 #   17: out  1  none
 /usr/local/bin/gpio exports
-
-# initialize magnetic door switch wpi 4/BCM 23
-# its an input, pull-up
-/usr/local/bin/gpio mode 4 up
 
 # restarts python webapp socket
 sudo -u www-data $HOME/venv/bin/python $HOME/www/service/webapp.fcgi $HOME/data/settings.json &

@@ -85,7 +85,7 @@ class Simple:
             1 for open
         """
 
-        self.init_output()
+        self.init_input()
 
         # we have to translate the pin reading to a status
         self.status = int(wiringpi.digitalRead(self.read_bcm_pin) == self.ON)
@@ -120,6 +120,12 @@ class Simple:
 
         wiringpi.wiringPiSetupSys()
         wiringpi.pinMode(self.write_bcm_pin, 1) # output mode
+
+    def init_input(self):
+        """Set the pin as input mode"""
+
+        wiringpi.wiringPiSetupSys()
+        wiringpi.pinMode(self.read_bcm_pin, 0) # input mode
 
     def read_sun_data(self):
         """

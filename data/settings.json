@@ -1,8 +1,8 @@
 {
   "data-directory": "",
-  "log-level": "DEBUG",
-  "light-bcm-pin": 27,
-  "door-bcm-pin": 17,
+  "log-level": "INFO",
+  "light-bcm-pin": 17,
+  "door-bcm-pin": 22,
   "door-read-bcm-pin":23,
   "latitude": "47.690416",
   "longitude": "-122.315576",

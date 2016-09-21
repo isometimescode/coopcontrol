@@ -36,6 +36,7 @@ class Door(Simple):
         """
 
         if new_status == self.status:
+            logging.debug("status is the same, skipping set_status to %u",new_status)
             return
 
         if new_status == 1: #open

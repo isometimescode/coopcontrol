@@ -35,7 +35,9 @@ def item_info(item):
         "status":item.get_status(),
         "status_str":item.get_status_name(),
         "id":item.read_bcm_pin,
-        "name":(item.__class__.__name__).lower()
+        "name":(item.__class__.__name__).lower(),
+        "start":item.get_start_time().isoformat(),
+        "end":item.get_end_time().isoformat()
     }
     return jsonify(data)
 

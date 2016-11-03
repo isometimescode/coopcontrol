@@ -2,6 +2,11 @@ function updateItem(data) {
     console.log(data);
     $('#js-'+data.name+'-status').text(data.status_str);
 
+    d = new Date(data.start);
+    $('#js-'+data.name+'-start').text(d.toLocaleTimeString("en-US"));
+    d = new Date(data.end)
+    $('#js-'+data.name+'-end').text(d.toLocaleTimeString("en-US"));
+
     panel = $('#js-'+data.name+'-panel');
 
     offbutton = panel.find('.btn-off');

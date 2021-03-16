@@ -1,4 +1,9 @@
-# Automated Chicken Coop Control
+# ⚠️ This code is no longer maintained. ⚠️
+
+I've gradually moved more of these automation components to individual Arduinos, and as such, the chicken coop no longer uses a Raspberry Pi for a centralized gateway. This code is no longer kept up to date with new fixes or new hardware. 
+
+
+## Automated Chicken Coop Control **ARCHIVED**
 
 ## The Hardware
 
